@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:fosslclient/FeedScreen.dart';
 import 'package:fosslclient/Styles.dart';
 import 'package:fosslclient/devrant/CurrentUser.dart';
+import 'package:fosslclient/screens/FeedScreen.dart';
+import 'package:fosslclient/screens/NewRantScreen.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+
+  @override
+  State<StatefulWidget> createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,50 +26,31 @@ class MyApp extends StatelessWidget {
           primaryColor: bg_color,
           dialogBackgroundColor: bg_color),
       home: Scaffold(
+        // backgroundColor: mg_color,
         appBar: AppBar(
           title: Text("fosslClient"),
           backgroundColor: bg_color,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                print("new rant");
+              },
+            )
+          ],
         ),
         drawer: Drawer(
           child: ListView(
             children: <Widget>[
-              // UserAccountsDrawerHeader(
-              //   accountName: new Text("ewpratten"),
-              //   currentAccountPicture: CircleAvatar(
-              //     backgroundColor: hl_color,
-              //     child: Text(CurrentUser()
-              //         .getInstance()
-              //         .name
-              //         .substring(0, 1)
-              //         .toUpperCase()),
-              //   ),
-              // ),
-              Container(
-                child: Center(
-                  child: Row(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          child: CircleAvatar(
-                            backgroundColor: hl_color,
-                            child: Text(CurrentUser()
-                                .getInstance()
-                                .name
-                                .substring(0, 1)
-                                .toUpperCase()),
-                          ),
-                        )
-                      ],
-                    ), 
-                    Column(
-                      children: <Widget>[
-                              Text(CurrentUser().getInstance().name),
-                              Text(CurrentUser().getInstance().getScoreString()),
-                      ],
-                    )
-                    ],
-                  ),
+              UserAccountsDrawerHeader(
+                accountName: new Text("ewpratten"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: hl_color,
+                  child: Text(CurrentUser()
+                      .getInstance()
+                      .name
+                      .substring(0, 1)
+                      .toUpperCase()),
                 ),
               ),
               Container(
@@ -71,12 +61,9 @@ class MyApp extends StatelessWidget {
                     label: Text(
                       "Feed",
                       style: TextStyle(fontSize: 18),
-                      ),
-                    onPressed: (){
-
-                    },
-                  )
-                  ),
+                    ),
+                    onPressed: () {},
+                  )),
               Container(
                   padding: EdgeInsets.all(10),
                   alignment: Alignment.centerLeft,
@@ -110,7 +97,7 @@ class MyApp extends StatelessWidget {
                     ),
                     onPressed: () {},
                   )),
-                  Container(
+              Container(
                   padding: EdgeInsets.all(10),
                   alignment: Alignment.centerLeft,
                   child: FlatButton.icon(
@@ -118,12 +105,9 @@ class MyApp extends StatelessWidget {
                     label: Text(
                       "Profile",
                       style: TextStyle(fontSize: 18),
-                      ),
-                    onPressed: (){
-
-                    },
-                  )
-                  ),
+                    ),
+                    onPressed: () {},
+                  )),
               Container(
                   padding: EdgeInsets.all(10),
                   alignment: Alignment.centerLeft,
@@ -138,6 +122,29 @@ class MyApp extends StatelessWidget {
             ],
           ),
         ),
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: hl_color,
+        //   child: Icon(Icons.add),
+        //   onPressed: () {
+        //     // new rant
+        //     // TextInputAction(context).
+        //     // Navigator.of(context).pop();
+        //     // Navigator.push(
+        //     //     context,
+        //     //     MaterialPageRoute(
+        //     //         builder: (BuildContext context) => NewRantScreen()));
+        //     // final ctx = navigatorKey.currentState.overlay.context;
+        //     // showDialog(
+        //     //   context: ctx,
+        //     //   builder: (context){
+        //     //     return AlertDialog(
+        //     //       content: NewRantScreen(),
+        //     //     );
+        //     //   }
+        //     // );
+
+        // },
+        // ),
         body: FeedScreen(),
       ),
     );
