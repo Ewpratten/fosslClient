@@ -36,7 +36,7 @@ class FeedState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     // overflow prevention hack
-    double c_width = MediaQuery.of(context).size.width * 0.8;
+    //double c_width = MediaQuery.of(context).size.width * 0.8;
 
     if (!load_latch) {
       loadRants();
@@ -45,49 +45,43 @@ class FeedState extends State<FeedScreen> {
 
     if (is_ready) {
       return Scaffold(
-          // backgroundColor: mg_color,
-          appBar: AppBar(
-            title: Text("fosslClient"),
-            backgroundColor: bg_color,
-          ),
-          drawer: MenuBuilder().build(context),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: hl_color,
-            child: Icon(Icons.add),
-            onPressed: () {
-              // new rant
-              // TextInputAction(context).
-              // Navigator.of(context).pop();
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (BuildContext context) => NewRantScreen()));
-              // final ctx = navigatorKey.currentState.overlay.context;
-              // showDialog(
-              //   context: ctx,
-              //   builder: (context){
-              //     return AlertDialog(
-              //       content: NewRantScreen(),
-              //     );
-              //   }
-              // );
-
+        // backgroundColor: mg_color,
+        appBar: AppBar(
+          title: Text("fosslClient"),
+          backgroundColor: bg_color,
+        ),
+        drawer: MenuBuilder().build(context),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: hl_color,
+          child: Icon(Icons.add),
+          onPressed: () {
+            // new rant
+            // TextInputAction(context).
+            // Navigator.of(context).pop();
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (BuildContext context) => NewRantScreen()));
+            // final ctx = navigatorKey.currentState.overlay.context;
+            // showDialog(
+            //   context: ctx,
+            //   builder: (context){
+            //     return AlertDialog(
+            //       content: NewRantScreen(),
+            //     );
+            //   }
+            // );
           },
-          ),
-          body: Container(
-          child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 50,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            child: RantWidget(new Rant(rants[index])).build(c_width),
-          );
-        },
-      )
-          ),
-        );
-      
-      
+        ),
+        body: Container(
+            child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: 50,
+          itemBuilder: (BuildContext context, int index) {
+            return RantWidget(new Rant(rants[index])).build(context);
+          },
+        )),
+      );
     } else {
       return Center(
         child: CircularProgressIndicator(),

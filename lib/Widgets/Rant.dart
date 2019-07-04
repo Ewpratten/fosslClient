@@ -8,77 +8,100 @@ class RantWidget {
     this.rant = rant;
   }
 
-  Container build(double c_width) {
+  Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Column(
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Card(
+        child: Row(
+          children: <Widget>[
+            // VOTE BUTTONS
+            Container(
+              //TODO: remove this media query, when I find what causes those huge margins
+              width: MediaQuery.of(context).size.width/6,
+              child: Column(
                 children: <Widget>[
-                  InkWell(
-                    child: Text(
-                      "++",
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    highlightColor: Color(0x1f1f1f1f),
-
-                    onTap: () {
+                  //Upvote
+                  MaterialButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    disabledColor: Colors.grey,
+                    disabledTextColor: Colors.black,
+                    splashColor: Colors.blueAccent,
+                    shape: CircleBorder(),
+                    onPressed: () {
                       rant.vote(1);
                     },
-                  ),
-                  Text(rant.score.toString()),
-                  InkWell(
                     child: Text(
-                      "--",
-                      style: TextStyle(fontSize: 28),
+                      "++",
+                      style: TextStyle(fontSize: 15.0),
                     ),
-                    highlightColor: Color(0x1f1f1f1f),
-
-                    onTap: () {
+                  ),
+                  // Score
+                  Text(rant.score.toString()),
+                  // Downvote
+                  MaterialButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    disabledColor: Colors.grey,
+                    disabledTextColor: Colors.black,
+                    splashColor: Colors.blueAccent,
+                    shape: CircleBorder(),
+                    onPressed: () {
                       rant.vote(-1);
                     },
+                    child: Text(
+                      "--",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ],
               ),
-              InkWell(
+            ),
+
+            // RIGHT SIDE, USERNAME + RANT + TAGS
+            Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(10),
-                  width: c_width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        rant.username,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(rant.body),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          rant.getTags(),
-                          style: TextStyle(
-                            color: Colors.grey,
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // USERNAME
+                        Container(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            rant.username,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Monospace'),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                onDoubleTap: () {
-                  rant.vote(1);
-                },
-                onTap: () {
-                  // Open the rant
-                },
-              ),
-            ],
-          ),
-        ],
+                        // RANT
+                        Container(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            rant.body,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 10,
+                          ),
+                        ),
+                        // TAGS
+                        Container(
+                          child: Text(
+                            rant.getTags(),
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ))),
+          ],
+        ),
       ),
     );
   }
