@@ -11,7 +11,7 @@ class RantWidget {
   Container build(double c_width) {
     return Container(
       padding: EdgeInsets.all(20),
-      child: ListView(
+      child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
@@ -78,7 +78,6 @@ class RantWidget {
               ),
             ],
           ),
-          Divider(),
         ],
       ),
     );

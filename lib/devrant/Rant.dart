@@ -6,10 +6,10 @@ class Rant {
   dynamic tags;
 
   Rant(dynamic raw) {
-    body = raw["body"];
+    body = raw["text"];
     username = raw["user_username"];
     score = raw["score"];
-    id = raw["rant_id"];
+    id = raw["id"];
     tags = raw["tags"];
   }
 
