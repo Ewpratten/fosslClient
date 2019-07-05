@@ -58,6 +58,7 @@ class MenuBuilder {
                   style: TextStyle(fontSize: 18),
                 ),
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => WeeklyScreen()));
                 },
