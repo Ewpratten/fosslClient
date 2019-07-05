@@ -6,8 +6,6 @@ import 'package:fosslclient/devrant/API.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 
 class FeedScreen extends StatefulWidget {
-  bool has_loaded = false;
-
   @override
   State<StatefulWidget> createState() {
     return FeedState();
@@ -15,35 +13,17 @@ class FeedScreen extends StatefulWidget {
 }
 
 class FeedState extends State<FeedScreen> {
-  bool is_ready = false;
-  bool load_latch = false;
-  dynamic rants;
-
-  void loadRants() async {
-    rants = await API().getFeed(0);
-    rants = rants["rants"];
-    setState(() {
-      is_ready = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    load_latch = false;
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    // overflow prevention hack
-    //double c_width = MediaQuery.of(context).size.width * 0.8;
+    return FutureBuilder<dynamic>(
+      future: API().getFeed(0),
+      builder: _builder,
+    );
+  }
 
-    if (!load_latch) {
-      loadRants();
-      load_latch = true;
-    }
-
-    if (is_ready) {
+  Widget _builder(BuildContext context, dynamic snapshot) {
+    if (snapshot.hasData) {
       return Scaffold(
         // backgroundColor: mg_color,
         appBar: AppBar(
@@ -75,17 +55,18 @@ class FeedState extends State<FeedScreen> {
         ),
         body: Container(
             child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 50,
-          itemBuilder: (BuildContext context, int index) {
-            return RantWidget(new Rant(rants[index])).build(context);
-          },
-        )),
-      );
-    } else {
-      return Center(
-        child: CircularProgressIndicator(),
+              shrinkWrap: true,
+              itemCount: snapshot.data["rants"].length,
+              itemBuilder: (BuildContext context, int index) {
+                return RantWidget(new Rant(snapshot.data["rants"][index]))
+                    .build(context);
+              },
+            )),
       );
     }
+
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 }
