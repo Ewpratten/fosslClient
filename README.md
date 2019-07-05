@@ -2,3 +2,4 @@
 An UNOFFICIAL devRant app
 
 the thingy: https://img.devrant.com/devrant/rant/c_1523620_5TMsH.jpg
+json thingy: https://medium.com/@diegoveloper/flutter-fetching-parsing-json-data-c019ddddaa34
