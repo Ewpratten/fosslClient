@@ -5,7 +5,13 @@ import 'package:fosslclient/Widgets/Rant.dart';
 import 'package:fosslclient/devrant/API.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 
+import '../devrant/DevRant.dart';
+
 class FeedScreen extends StatefulWidget {
+  FeedScreen(){
+    DevRant devRant = new DevRant();
+    devRant.init();
+  }
   @override
   State<StatefulWidget> createState() {
     return FeedState();
@@ -14,10 +20,26 @@ class FeedScreen extends StatefulWidget {
 
 class FeedState extends State<FeedScreen> {
 
+  Future<dynamic> fetchRantFeed() async{
+    var dR = new DevRant();
+    await dR.init();
+    var feed = await dR.getRantFeed(
+        hideReposts: true,
+        sortBy: SortBy.TOP,
+        postRange: PostRange.DAY,
+        filter: [
+          FilterOptions.DEVRANT,
+          FilterOptions.RANTS,
+          FilterOptions.RANDOM
+        ]
+    );
+    print("Feed: " + feed.toString());
+    return feed;
+  }
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: API().getFeed(0),
+      future: fetchRantFeed(),
       builder: _builder,
     );
   }
@@ -56,9 +78,9 @@ class FeedState extends State<FeedScreen> {
         body: Container(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: snapshot.data["rants"].length,
-              itemBuilder: (BuildContext context, int index) {
-                return RantWidget(new Rant(snapshot.data["rants"][index]))
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int indexxxx) {
+                return RantWidget(new Rant(snapshot.data[indexxxx]))
                     .build(context);
               },
             )),
