@@ -120,8 +120,9 @@ class FeedState extends State<FeedScreen> {
                     builder: (context, snapshot) {
                       if(snapshot.hasData){
                         if(rants.length > index){
-                          return RantWidget(new Rant.fromJSON(rants[index]))
-                              .build(context);
+                          return Container(
+                            child: RantWidget(new Rant.fromJSON(rants[index])),
+                          );
                         }
                         return Card(
                           child: Center(
@@ -139,8 +140,11 @@ class FeedState extends State<FeedScreen> {
                     },
                   );
                 }
-                return RantWidget(new Rant.fromJSON(rants[index]))
-                    .build(context);
+
+                //The Container is only there because RantWidget is a StatefulWidget that does therefore not have a build method.
+                return Container(
+                  child: RantWidget(new Rant.fromJSON(rants[index])),
+                );
               },
             ),
           ),

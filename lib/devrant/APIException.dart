@@ -59,8 +59,15 @@ class APIRequestFailedException implements APIException {
   String get errMsg => "API request failed.";
 }
 
-class APIAuthenticationFailed implements APIException {
+class APIAuthenticationFailedException implements APIException {
   @override
   // TODO: implement errMsg
   String get errMsg => "The api failed to authenticate. Invalid username or password?";
+}
+
+class APIInvalidParametersException implements APIException {
+  @override
+  // TODO: implement errMsg
+  String get errMsg => "The parameters passed to this function are invalid.";
+
 }

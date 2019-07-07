@@ -3,13 +3,30 @@ import 'package:fosslclient/devrant/Rant.dart';
 
 import '../devrant/DevRant.dart';
 
-class RantWidget {
+
+
+class RantWidget extends StatefulWidget {
   Rant rant;
 
   RantWidget(Rant rant) {
     this.rant = rant;
   }
 
+  @override
+  State<StatefulWidget> createState() {
+    return RantWidgetState(rant);
+  }
+}
+
+class RantWidgetState extends State<RantWidget> {
+  Rant rant;
+
+  RantWidgetState(Rant rant) {
+    this.rant = rant;
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -24,22 +41,22 @@ class RantWidget {
                 children: <Widget>[
                   //Upvote
                   InkWell(
-                    onDoubleTap: () {
-                        new DevRant().voteRant(rant.id, 1).catchError((e) {
-                          print(e.errMsg);
-                        });
+                    onTap: () {
+                      rant.upVote().then( (sc) {setState(() {});});
+
                     },
                     child: Center(
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 2.5),
                         child: new Icon(
                           Icons.add,
-                          color: Colors.white,
+                          color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.grey : Colors.white,
                           size: 30.0,
                         ),
                         decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue
+                            shape: BoxShape.circle,
+                            color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.black54 :
+                            rant.voteButtonsState == VoteButtonsState.UP_VOTED ? Colors.red : Colors.blue
                         ),
                         padding: const EdgeInsets.all(2),
                       ),
@@ -55,9 +72,9 @@ class RantWidget {
                   ),
                   // Downvote
                   InkWell(
-                    onDoubleTap: () {
-                      new DevRant().voteRant(rant.id, -1).catchError((e) {
-                        print(e.errMsg);
+                    onTap: () {
+                      setState(() {
+                        rant.downVote().then( (sc) {setState(() {});});
                       });
                     },
                     child: Center(
@@ -65,12 +82,13 @@ class RantWidget {
                         margin: EdgeInsets.symmetric(vertical: 2.5),
                         child: new Icon(
                           Icons.remove,
-                          color: Colors.white,
+                          color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.grey : Colors.white,
                           size: 30.0,
                         ),
                         decoration: new BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blue
+                            color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.black54 :
+                                rant.voteButtonsState == VoteButtonsState.DOWN_VOTED ? Colors.red : Colors.blue
                         ),
                         padding: const EdgeInsets.all(2),
                       ),

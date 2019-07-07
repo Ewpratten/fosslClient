@@ -95,10 +95,10 @@ class DevRant {
         body: {"password": password, "username": username, "app": '3'});
     if (res.statusCode != 200) {
       print("LOGIN FAILED: " + res.body);
-      throw new APIAuthenticationFailed();
+      throw new APIAuthenticationFailedException();
     }
     var data = jsonDecode(res.body);
-    if (!data["success"]) throw new APIAuthenticationFailed();
+    if (!data["success"]) throw new APIAuthenticationFailedException();
     loggedIn = true;
     _authToken = data["auth_token"]["key"];
     _authTokenId = data["auth_token"]["id"];
@@ -124,12 +124,47 @@ class DevRant {
   }
 
   //TODO: implement method
-  Future<void> voteComment(int id) async {
-    throw new APIMethodNotImplementedException();
+  Future<int> voteRant(int id, int direction, [int reason]) async {
+    if (!_init) throw new APINotInitializedException();
+    if (!loggedIn) throw new APINotAuthenticatedException();
+    if (direction != 1 && direction != 0 && direction != -1)
+      throw new APIInvalidParametersException();
+    if (_authToken == null || _authTokenId == null || _userId == null)
+      throw new APIInternalIllegalStateException();
+
+    var params = {
+      "app":"3",
+      "token_id": _authTokenId.toString(),
+      "token_key": _authToken,
+      "user_id": _userId.toString(),
+      "vote": direction.toString()
+    };
+    if(direction == -1) {
+      if (reason == null) {
+        params["reason"] = "1";
+      } else {
+        params["reason"] = reason.toString();
+      }
+    }
+
+
+    print("VOTE REQUEST: " + params.toString());
+
+    var res = await http.post(_base + "/devrant/rants/" + id.toString() + "/vote",
+    body: params);
+
+    if (res.statusCode != 200) {
+      throw new APIRequestFailedException();
+    }
+    var data = jsonDecode(res.body);
+    if (!data["success"]) throw new APIRequestFailedException();
+    int score = data["rant"]["score"];
+    print("RESPONSE; success: " + data["success"].toString() + ", new score: " + score.toString());
+    return score;
   }
 
   //TODO: implement method
-  Future<void> voteRant(int id, int direction) async {
+  Future<void> voteComment(int id, int direction) async {
     throw new APIMethodNotImplementedException();
   }
 
