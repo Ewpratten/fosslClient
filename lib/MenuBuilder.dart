@@ -8,19 +8,19 @@ import 'devrant/DevRant.dart';
 
 class MenuBuilder {
 
-  Future<dynamic> fetchRantFeed() async{
+  Future<dynamic> fetchUserData() async{
     var dR = new DevRant();
     await dR.init();
     //TODO: REMOVE TEMPORARY TESTING LOGIN CALL
     if (!dR.loggedIn) {
-      await dR.login("xzvf", "Gen1us!?");
+      await dR.login("xzvf", "HAHAHA FALSE PASSWORD");
     }
     return dR.userdata;
   }
 
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: fetchRantFeed(),
+      future: fetchUserData(),
       builder: _builder,
     );
   }
