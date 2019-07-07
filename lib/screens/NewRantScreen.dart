@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fosslclient/Widgets/Rant.dart';
-import 'package:fosslclient/devrant/Post.dart';
+import 'package:fosslclient/Widgets/RantWidget.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 import 'package:fosslclient/main.dart';
+
+import '../devrant/DevRant.dart';
 
 class NewRantScreen extends StatefulWidget {
   @override
@@ -37,8 +38,10 @@ class NewRantState extends State<NewRantScreen> {
           ),
           FlatButton(
             child: Text("Post Rant"),
-            onPressed: () {
-              postRant(bodyTextController.text, tagsTextController.text);
+            onPressed: () async{
+              var d = new DevRant();
+              await d.init();
+              d.postRant(body: bodyTextController.text, tags: tagsTextController.text);
               Navigator.pop(context);
             },
           ),

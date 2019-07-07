@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fosslclient/MenuBuilder.dart';
 import 'package:fosslclient/Styles.dart';
-import 'package:fosslclient/Widgets/Rant.dart';
+import 'package:fosslclient/Widgets/RantWidget.dart';
 import 'package:fosslclient/devrant/API.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 

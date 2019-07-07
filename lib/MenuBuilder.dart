@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fosslclient/Styles.dart';
-import 'package:fosslclient/devrant/CurrentUser.dart';
 import 'package:fosslclient/screens/FeedScreen.dart';
 import 'package:fosslclient/screens/WeeklyScreen.dart';
 
@@ -36,9 +35,7 @@ class MenuBuilder {
               accountName: new Text(userdata["username"]),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: hl_color,
-                child: Text(CurrentUser()
-                    .getInstance()
-                    .name
+                child: Text(userdata["username"]
                     .substring(0, 1)
                     .toUpperCase()),
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fosslclient/MenuBuilder.dart';
 import 'package:fosslclient/Styles.dart';
-import 'package:fosslclient/devrant/CurrentUser.dart';
 import 'package:fosslclient/screens/FeedScreen.dart';
 import 'package:fosslclient/screens/NewRantScreen.dart';
 import 'package:fosslclient/screens/WeeklyScreen.dart';

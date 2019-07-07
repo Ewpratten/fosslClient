@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fosslclient/MenuBuilder.dart';
 import 'package:fosslclient/Styles.dart';
-import 'package:fosslclient/Widgets/Rant.dart';
-import 'package:fosslclient/devrant/API.dart';
+import 'package:fosslclient/Widgets/RantWidget.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 
 import '../devrant/DevRant.dart';
 
 class FeedScreen extends StatefulWidget {
-  FeedScreen(){
+  FeedScreen() {
     DevRant devRant = new DevRant();
     devRant.init();
   }
@@ -19,11 +18,19 @@ class FeedScreen extends StatefulWidget {
 }
 
 class FeedState extends State<FeedScreen> {
+  int refreshed = 0;
+  int skip = 0;
 
-  Future<dynamic> fetchRantFeed() async{
+  var rants = [];
+
+  Future<dynamic> fetchRantFeed() async {
     var dR = new DevRant();
     await dR.init();
+    if (!dR.loggedIn) {
+      await dR.login("USERNAME", "DIDYOUREALLYBELIEVEWHATICOMMITEDWASMYPASSWORD!? You, my friend have been trolled. I'd never use such an insecure password");
+    }
     var feed = await dR.getRantFeed(
+        skip: skip,
         hideReposts: true,
         sortBy: SortBy.TOP,
         postRange: PostRange.WEEK,
@@ -31,11 +38,27 @@ class FeedState extends State<FeedScreen> {
           FilterOptions.DEVRANT,
           FilterOptions.RANTS,
           FilterOptions.RANDOM
-        ]
-    );
-    print("Feed: " + feed.toString());
+        ]);
+    rants.addAll(feed);
     return feed;
   }
+
+  Future<void> refreshHandler() async {
+    setState(() {
+      refreshed++;
+      skip = 0;
+      rants = [];
+    });
+  }
+
+  Future<void> fetchMoreFeed() async {
+    skip = rants.length;
+    await fetchRantFeed();
+    setState(() {
+    });
+    return rants;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
@@ -76,14 +99,52 @@ class FeedState extends State<FeedScreen> {
           },
         ),
         body: Container(
+            child: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels ==
+                scrollInfo.metrics.maxScrollExtent) {
+
+            }
+            return true;
+          },
+          child: RefreshIndicator(
+            onRefresh: refreshHandler,
             child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int indexxxx) {
-                return RantWidget(new Rant(snapshot.data[indexxxx]))
+              itemCount: rants.length+1,
+              itemBuilder: (BuildContext context, int index) {
+                if(index >= rants.length){
+                  return FutureBuilder<dynamic> (
+                    future: fetchMoreFeed(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData){
+                        if(rants.length > index){
+                          return RantWidget(new Rant.fromJSON(rants[index]))
+                              .build(context);
+                        }
+                        return Card(
+                          child: Center(
+                            child: Text(
+                              "No more rants",
+                            ),
+                          ),
+                        );
+                      }
+                      return Card(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    },
+                  );
+                }
+                return RantWidget(new Rant.fromJSON(rants[index]))
                     .build(context);
               },
-            )),
+            ),
+          ),
+        )),
       );
     }
 

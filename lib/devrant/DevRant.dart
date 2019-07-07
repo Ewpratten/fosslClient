@@ -24,6 +24,8 @@ class DevRant {
   String _authToken;
   int _authTokenId;
 
+  int get userId => _userId;
+
   var _seenNews = [];
 
   //Singleton boilerplate
@@ -75,7 +77,8 @@ class DevRant {
   Future<void> fetchUserData() async {
     if (!_init) throw new APINotInitializedException();
     if (!loggedIn) throw new APINotAuthenticatedException();
-    if (_authToken == null || _authTokenId == null) throw new APIInternalIllegalStateException();
+    if (_authToken == null || _authTokenId == null)
+      throw new APIInternalIllegalStateException();
 
     var res = await http.get(_base + "/users/" + _userId.toString() + "?app=3");
     if (res.statusCode != 200) throw new APIRequestFailedException();
@@ -100,7 +103,7 @@ class DevRant {
     _authToken = data["auth_token"]["key"];
     _authTokenId = data["auth_token"]["id"];
     _userId = data["auth_token"]["user_id"];
-    
+
     await _prefs.setString("authToken", _authToken);
     await _prefs.setInt("userId", _userId);
     await _prefs.setInt("authTokenId", _authTokenId);
@@ -110,7 +113,8 @@ class DevRant {
   void logout() {
     if (!_init) throw new APINotInitializedException();
     if (!loggedIn) throw new APINotAuthenticatedException();
-    if (_authToken == null || _authTokenId == null) throw new APIInternalIllegalStateException();
+    if (_authToken == null || _authTokenId == null)
+      throw new APIInternalIllegalStateException();
 
     _authToken = null;
     _authTokenId = null;
@@ -146,7 +150,9 @@ class DevRant {
       PostRange postRange,
       List<FilterOptions> filter}) async {
     //if (!_init) throw new APINotInitializedException();
-    if(!_init) init();
+    if (!_init) init();
+
+    print("retrieving feed");
 
     var params = new Map<String, dynamic>();
     params["hide_reposts"] = hideReposts ? 1 : 0;
@@ -175,8 +181,9 @@ class DevRant {
       params["filters"] = _filter;
     }
 
-    if(loggedIn){
-      if(_authToken == null || _authTokenId == null || _userId == null) throw new APIInternalIllegalStateException();
+    if (loggedIn) {
+      if (_authToken == null || _authTokenId == null || _userId == null)
+        throw new APIInternalIllegalStateException();
       params["token_key"] = _authToken;
       params["token_id"] = _authTokenId.toString();
       params["user_id"] = _userId;
