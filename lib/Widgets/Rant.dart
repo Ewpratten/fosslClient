@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fosslclient/devrant/Rant.dart';
 
+import '../devrant/DevRant.dart';
+
 class RantWidget {
   Rant rant;
 
@@ -16,44 +18,65 @@ class RantWidget {
           children: <Widget>[
             // VOTE BUTTONS
             Container(
-              //TODO: remove this media query, when I find what causes those huge margins
-              width: MediaQuery.of(context).size.width/6,
+              padding: EdgeInsets.all(5),
+              margin: EdgeInsets.only(left: 5),
               child: Column(
                 children: <Widget>[
                   //Upvote
-                  MaterialButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.black,
-                    splashColor: Colors.blueAccent,
-                    shape: CircleBorder(),
-                    onPressed: () {
-                      rant.vote(1);
+                  InkWell(
+                    onDoubleTap: () {
+                        new DevRant().voteRant(rant.id, 1).catchError((e) {
+                          print(e.errMsg);
+                        });
                     },
-                    child: Text(
-                      "++",
-                      style: TextStyle(fontSize: 15.0),
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 2.5),
+                        child: new Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                        decoration: new BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue
+                        ),
+                        padding: const EdgeInsets.all(2),
+                      ),
                     ),
                   ),
                   // Score
-                  Text(rant.score.toString()),
-                  // Downvote
-                  MaterialButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.black,
-                    splashColor: Colors.blueAccent,
-                    shape: CircleBorder(),
-                    onPressed: () {
-                      rant.vote(-1);
-                    },
-                    child: Text(
-                      "--",
-                      style: TextStyle(fontSize: 15.0),
+                  Text(
+                      rant.score.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
+                  // Downvote
+                  InkWell(
+                    onDoubleTap: () {
+                      new DevRant().voteRant(rant.id, -1).catchError((e) {
+                        print(e.errMsg);
+                      });
+                    },
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 2.5),
+                        child: new Icon(
+                          Icons.remove,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue
+                        ),
+                        padding: const EdgeInsets.all(2),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),

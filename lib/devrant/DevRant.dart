@@ -112,12 +112,12 @@ class DevRant {
   }
 
   //TODO: implement method
-  Future<void> voteComment() async {
+  Future<void> voteComment(int id) async {
     throw new APIMethodNotImplementedException();
   }
 
   //TODO: implement method
-  Future<void> voteRant() async {
+  Future<void> voteRant(int id, int direction) async {
     throw new APIMethodNotImplementedException();
   }
 
