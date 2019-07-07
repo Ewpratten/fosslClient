@@ -26,7 +26,7 @@ class FeedState extends State<FeedScreen> {
     var feed = await dR.getRantFeed(
         hideReposts: true,
         sortBy: SortBy.TOP,
-        postRange: PostRange.DAY,
+        postRange: PostRange.WEEK,
         filter: [
           FilterOptions.DEVRANT,
           FilterOptions.RANTS,

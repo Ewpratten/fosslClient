@@ -14,7 +14,7 @@ class MenuBuilder {
     await dR.init();
     //TODO: REMOVE TEMPORARY TESTING LOGIN CALL
     if (!dR.loggedIn) {
-      await dR.login("USERNAME", "PASSWORD");
+      await dR.login("xzvf", "Gen1us!?");
     }
     return dR.userdata;
   }

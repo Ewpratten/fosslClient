@@ -19,9 +19,10 @@ class DevRant {
 
   //Has the init method been called
   bool _init = false;
-  int _userId = -1;
 
+  int _userId;
   String _authToken;
+  int _authTokenId;
 
   var _seenNews = [];
 
@@ -38,18 +39,22 @@ class DevRant {
   // Real initialization here
   Future<void> init() async {
     print("init called.");
-    if (_init) return;
+    if (_init) {
+      return;
+    }
     _prefs = await SharedPreferences.getInstance();
     userdata = {};
 
     _authToken = _prefs.getString("authToken");
     _userId = _prefs.getInt("userId");
+    _authTokenId = _prefs.getInt("authTokenId");
 
     _init = true;
-    print("initialized.");
 
-    if (_authToken == null || _userId == null) {
-      _userId = -1;
+    if (_authToken == null || _userId == null || _authTokenId == null) {
+      _userId = null;
+      _authTokenId = null;
+      _authToken = null;
       return;
     }
 
@@ -61,7 +66,8 @@ class DevRant {
     _init = false;
     loggedIn = false;
     _authToken = null;
-    _userId = -1;
+    _authTokenId = null;
+    _userId = null;
     userdata = {};
     await init();
   }
@@ -69,7 +75,7 @@ class DevRant {
   Future<void> fetchUserData() async {
     if (!_init) throw new APINotInitializedException();
     if (!loggedIn) throw new APINotAuthenticatedException();
-    if (_authToken == null) throw new APIInternalIllegalStateException();
+    if (_authToken == null || _authTokenId == null) throw new APIInternalIllegalStateException();
 
     var res = await http.get(_base + "/users/" + _userId.toString() + "?app=3");
     if (res.statusCode != 200) throw new APIRequestFailedException();
@@ -92,23 +98,25 @@ class DevRant {
     if (!data["success"]) throw new APIAuthenticationFailed();
     loggedIn = true;
     _authToken = data["auth_token"]["key"];
+    _authTokenId = data["auth_token"]["id"];
     _userId = data["auth_token"]["user_id"];
     
     await _prefs.setString("authToken", _authToken);
     await _prefs.setInt("userId", _userId);
-
+    await _prefs.setInt("authTokenId", _authTokenId);
     await fetchUserData();
   }
 
   void logout() {
     if (!_init) throw new APINotInitializedException();
     if (!loggedIn) throw new APINotAuthenticatedException();
-    if (_authToken == null) throw new APIInternalIllegalStateException();
+    if (_authToken == null || _authTokenId == null) throw new APIInternalIllegalStateException();
 
     _authToken = null;
+    _authTokenId = null;
     loggedIn = false;
     userdata = null;
-    _userId = -1;
+    _userId = null;
   }
 
   //TODO: implement method
@@ -148,16 +156,16 @@ class DevRant {
         params["sort"] = "algo";
         break;
       case SortBy.TOP:
-        params["sort"] = "new";
+        params["sort"] = "top";
         params["range"] = postRange == PostRange.DAY
             ? "day"
             : postRange == PostRange.WEEK
                 ? "week"
                 : postRange == PostRange.MONTH ? "month" : "all";
         break;
-      case SortBy.NEW:
+      case SortBy.RECENT:
       default:
-        params["sort"] = "new";
+        params["sort"] = "recent";
     }
 
     if (filter != null) {
@@ -165,6 +173,13 @@ class DevRant {
       filter.forEach((FilterOptions f) => _fw.add(f.index));
       String _filter = _fw.join(',');
       params["filters"] = _filter;
+    }
+
+    if(loggedIn){
+      if(_authToken == null || _authTokenId == null || _userId == null) throw new APIInternalIllegalStateException();
+      params["token_key"] = _authToken;
+      params["token_id"] = _authTokenId.toString();
+      params["user_id"] = _userId;
     }
 
     var res = await http.get(_getUrl("/devrant/rants", params));
@@ -199,7 +214,7 @@ class DevRant {
   }
 }
 
-enum SortBy { NEW, TOP, ALGO }
+enum SortBy { RECENT, TOP, ALGO }
 
 enum PostRange { DAY, WEEK, MONTH, ALL }
 
