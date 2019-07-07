@@ -3,8 +3,6 @@ import 'package:fosslclient/devrant/Rant.dart';
 
 import '../devrant/DevRant.dart';
 
-
-
 class RantWidget extends StatefulWidget {
   Rant rant;
 
@@ -21,10 +19,11 @@ class RantWidget extends StatefulWidget {
 class RantWidgetState extends State<RantWidget> {
   Rant rant;
 
+  bool voting = false;
+
   RantWidgetState(Rant rant) {
     this.rant = rant;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -35,69 +34,9 @@ class RantWidgetState extends State<RantWidget> {
           children: <Widget>[
             // VOTE BUTTONS
             Container(
-              padding: EdgeInsets.all(5),
-              margin: EdgeInsets.only(left: 5),
-              child: Column(
-                children: <Widget>[
-                  //Upvote
-                  InkWell(
-                    onTap: () {
-                      rant.upVote().then( (sc) {setState(() {});});
-
-                    },
-                    child: Center(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 2.5),
-                        child: new Icon(
-                          Icons.add,
-                          color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.grey : Colors.white,
-                          size: 30.0,
-                        ),
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.black54 :
-                            rant.voteButtonsState == VoteButtonsState.UP_VOTED ? Colors.red : Colors.blue
-                        ),
-                        padding: const EdgeInsets.all(2),
-                      ),
-                    ),
-                  ),
-                  // Score
-                  Text(
-                      rant.score.toString(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  // Downvote
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        rant.downVote().then( (sc) {setState(() {});});
-                      });
-                    },
-                    child: Center(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 2.5),
-                        child: new Icon(
-                          Icons.remove,
-                          color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.grey : Colors.white,
-                          size: 30.0,
-                        ),
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: rant.voteButtonsState == VoteButtonsState.DISABLED ? Colors.black54 :
-                                rant.voteButtonsState == VoteButtonsState.DOWN_VOTED ? Colors.red : Colors.blue
-                        ),
-                        padding: const EdgeInsets.all(2),
-                      ),
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.only(left: 5),
+                child: _buildLeft(context)),
 
             // RIGHT SIDE, USERNAME + RANT + TAGS
             Expanded(
@@ -144,6 +83,89 @@ class RantWidgetState extends State<RantWidget> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLeft(BuildContext context) {
+    if (voting) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Column(
+      children: <Widget>[
+        //Upvote
+        InkWell(
+          onTap: () {
+            setState(() {
+              voting = true;
+            });
+            rant.upVote().then((sc) {
+              setState(() {
+                voting = false;
+              });
+            });
+          },
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 2.5),
+              child: new Icon(
+                Icons.add,
+                color: rant.voteButtonsState == VoteButtonsState.DISABLED
+                    ? Colors.grey
+                    : Colors.white,
+                size: 30.0,
+              ),
+              decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: rant.voteButtonsState == VoteButtonsState.DISABLED
+                      ? Colors.black54
+                      : rant.voteButtonsState == VoteButtonsState.UP_VOTED
+                          ? Colors.red
+                          : Colors.blue),
+              padding: const EdgeInsets.all(2),
+            ),
+          ),
+        ),
+        // Score
+        Text(
+          rant.score.toString(),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        // Downvote
+        InkWell(
+          onTap: () {
+            setState(() {
+              voting = true;
+            });
+            rant.downVote().then((sc) {
+              setState(() {
+                voting = false;
+              });
+            });
+          },
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 2.5),
+              child: new Icon(
+                Icons.remove,
+                color: rant.voteButtonsState == VoteButtonsState.DISABLED
+                    ? Colors.grey
+                    : Colors.white,
+                size: 30.0,
+              ),
+              decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: rant.voteButtonsState == VoteButtonsState.DISABLED
+                      ? Colors.black54
+                      : rant.voteButtonsState == VoteButtonsState.DOWN_VOTED
+                          ? Colors.red
+                          : Colors.blue),
+              padding: const EdgeInsets.all(2),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
